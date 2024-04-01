@@ -6,10 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddGraphQLServer()
-    .AddInMemorySubscriptions()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
-    .AddSubscriptionType<Subscription>();
+    .AddSubscriptionType<Subscription>()
+    .AddInMemorySubscriptions();
 
 builder.Services.AddPooledDbContextFactory<DataContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

@@ -25,7 +25,7 @@ namespace GraphQLDemo2.API.Services.Courses
         public async Task<Course> Create(CourseDTO course)
         {
 
-            using (DataContext context=_contextFactory.CreateDbContext())
+            using (DataContext context = _contextFactory.CreateDbContext())
             {
                 Course c = new Course
                 {
@@ -45,31 +45,26 @@ namespace GraphQLDemo2.API.Services.Courses
 
         }
 
-        public async Task<Course> Update(CourseDTO course)
+        public async Task<Course> Update(CourseDTO courseDTO)
         {
 
             using (DataContext context = _contextFactory.CreateDbContext())
             {
-                Course c = new Course
-                {
-                    Id = course.Id,
-                    Name = course.Name,
-                    Subject = Subject.MatheMatics,
-                    InstructorId = 101,
-                    Instructor = new Instructor
-                    {
-                        Id = 101,
-                        FirstName = "John",
-                        LastName = "Doe",
-                        Salary = 50000
-                    },
-                    Students = new List<Student>(),
+                var course = context.Courses.FirstOrDefault(c => c.Id == courseDTO.Id);
 
-                };
-                context.Courses.Add(c);
+                if(course == null)
+                {
+                    throw new GraphQLException(new Error("Course not found.","COURSE_NOT_FOUND"));
+                }
+               
+                course.Name = courseDTO.Name;
+                course.Subject = courseDTO.Subject;
+                course.InstructorId = courseDTO.InstructorId;
+
+               
                 await context.SaveChangesAsync();
 
-                return c;
+                return course;
 
             }
 
@@ -80,15 +75,12 @@ namespace GraphQLDemo2.API.Services.Courses
 
             using (DataContext context = _contextFactory.CreateDbContext())
             {
-                Course c = new Course
+                var course = await context.Courses.FindAsync(id);
+                if (course != null)
                 {
-                    Id = id
-
-                };
-                context.Courses.Remove(c);
+                    context.Courses.Remove(course);
+                }
                 return await context.SaveChangesAsync() > 0;
-
-                
 
             }
 
