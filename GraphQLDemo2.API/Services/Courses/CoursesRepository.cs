@@ -14,11 +14,19 @@ namespace GraphQLDemo2.API.Services.Courses
             _contextFactory = contextFactory;
         }
 
-        public async Task<IEnumerable<Course>> GetCourses()
+        public async Task<IEnumerable<Course>> GetAllCourses()
         {
             using (DataContext context = _contextFactory.CreateDbContext())
             {
                 return await context.Courses.ToListAsync();
+            }
+        }
+
+        public async Task<Course?> GetById(int id)
+        {
+            using (DataContext context = _contextFactory.CreateDbContext())
+            {
+                return await context.Courses.FirstOrDefaultAsync(c => c.Id == id);
             }
         }
 
@@ -29,7 +37,7 @@ namespace GraphQLDemo2.API.Services.Courses
             {
                 Course c = new Course
                 {
-                   
+
                     Name = course.Name,
                     Subject = course.Subject,
                     InstructorId = course.InstructorId,
@@ -52,16 +60,16 @@ namespace GraphQLDemo2.API.Services.Courses
             {
                 var course = context.Courses.FirstOrDefault(c => c.Id == courseDTO.Id);
 
-                if(course == null)
+                if (course == null)
                 {
-                    throw new GraphQLException(new Error("Course not found.","COURSE_NOT_FOUND"));
+                    throw new GraphQLException(new Error("Course not found.", "COURSE_NOT_FOUND"));
                 }
-               
+
                 course.Name = courseDTO.Name;
                 course.Subject = courseDTO.Subject;
                 course.InstructorId = courseDTO.InstructorId;
 
-               
+
                 await context.SaveChangesAsync();
 
                 return course;
