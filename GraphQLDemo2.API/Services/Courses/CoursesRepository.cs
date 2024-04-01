@@ -29,17 +29,10 @@ namespace GraphQLDemo2.API.Services.Courses
             {
                 Course c = new Course
                 {
-                    Id = course.Id,
+                   
                     Name = course.Name,
-                    Subject = Subject.MatheMatics,
-                    InstructorId = 101,
-                    Instructor = new Instructor
-                    {
-                        Id = 101,
-                        FirstName = "John",
-                        LastName = "Doe",
-                        Salary = 50000
-                    },
+                    Subject = course.Subject,
+                    InstructorId = course.InstructorId,
                     Students = new List<Student>(),
 
                 };
