@@ -53,7 +53,8 @@ namespace GraphQLDemo2.API.Schema.Queries
 
 
         [UseDbContext(typeof(DataContext))]
-        [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        [UseProjection]
         [UseFiltering(typeof(CourseFilterType))]
         [UseSorting(typeof(CourseSortType))]
         public IQueryable<CourseQueryType> GetPaginatedCourses([ScopedService] DataContext context)
@@ -64,7 +65,6 @@ namespace GraphQLDemo2.API.Schema.Queries
                 Name = c.Name,
                 Subject = c.Subject,
                 InstructorId = c.InstructorId,
-
 
             });
 

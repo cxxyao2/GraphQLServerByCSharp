@@ -15,6 +15,7 @@ builder.Services.AddGraphQLServer()
     .AddSubscriptionType<Subscription>()
     .AddFiltering()
     .AddSorting()
+    .AddProjections()
     .AddInMemorySubscriptions();
 
 builder.Services.AddPooledDbContextFactory<DataContext>(options =>

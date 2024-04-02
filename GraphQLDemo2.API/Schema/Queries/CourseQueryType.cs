@@ -10,11 +10,11 @@ namespace GraphQLDemo2.API.Schema.Queries
         public string Name { get; set; }
         public Subject Subject { get; set; }
 
-        [GraphQLIgnore]
+        [IsProjected(true)]
         public int InstructorId { get; set; }
 
         [GraphQLNonNullType]
-        public async Task<InstructorDTO> InstructorMember([Service] InstructorDataLoader instructorDataLoader)
+        public async Task<InstructorDTO?> InstructorMember([Service] InstructorDataLoader instructorDataLoader)
         {
             var instructor =  await instructorDataLoader.LoadAsync(InstructorId, CancellationToken.None);
 
