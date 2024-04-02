@@ -3,7 +3,7 @@ using GraphQLDemo2.API.Entities;
 using HotChocolate.Execution;
 using HotChocolate.Subscriptions;
 
-namespace GraphQLDemo2.API.Schema
+namespace GraphQLDemo2.API.Schema.Subscriptions
 {
     public class Subscription
     {
@@ -13,11 +13,11 @@ namespace GraphQLDemo2.API.Schema
         [SubscribeAndResolve]
         public ValueTask<ISourceStream<Course>> CourseUpdated(int courseId, [Service] ITopicEventReceiver topicEventReceiver)
         {
-            string topicName = $"{courseId}_{nameof(Subscription.CourseUpdated)}";
+            string topicName = $"{courseId}_{nameof(CourseUpdated)}";
             return topicEventReceiver.SubscribeAsync<Course>(topicName);
         }
 
 
-        
+
     }
 }

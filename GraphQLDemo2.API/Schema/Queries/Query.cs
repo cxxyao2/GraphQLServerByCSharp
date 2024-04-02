@@ -1,7 +1,7 @@
 ﻿using GraphQLDemo2.API.Entities;
 using GraphQLDemo2.API.Services.Courses;
 
-namespace GraphQLDemo2.API.Schema
+namespace GraphQLDemo2.API.Schema.Queries
 {
     public class Query
     {
@@ -13,9 +13,20 @@ namespace GraphQLDemo2.API.Schema
             _coursesRepository = coursesRepository;
         }
 
-        public async Task<IEnumerable<Course>> GetCourses()
+        public async Task<IEnumerable<CourseQueryType>> GetCourses()
         {
-            return await _coursesRepository.GetCourses();
+            var courses =  await _coursesRepository.GetAllCourses();
+
+            return courses.Select(c => new CourseQueryType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId,
+                
+              
+            });
+
         }
         /* public IEnumerable<Course> GetCourses() 
         {

@@ -1,9 +1,10 @@
 ﻿using GraphQLDemo2.API.DTOs;
 using GraphQLDemo2.API.Entities;
+using GraphQLDemo2.API.Schema.Subscriptions;
 using GraphQLDemo2.API.Services.Courses;
 using HotChocolate.Subscriptions;
 
-namespace GraphQLDemo2.API.Schema
+namespace GraphQLDemo2.API.Schema.Mutations
 {
     public class Mutation
     {
@@ -23,7 +24,7 @@ namespace GraphQLDemo2.API.Schema
                 InstructorId = courseInput.InstructorId
             };
 
-           Course course =  await _coursesRepository.Create(courseDTO);
+            Course course = await _coursesRepository.Create(courseDTO);
 
             await topicEventSender.SendAsync(nameof(Subscription.CourseCreated), course);
 

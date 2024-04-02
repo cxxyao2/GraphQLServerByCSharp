@@ -1,6 +1,10 @@
 using GraphQLDemo2.API.Data;
-using GraphQLDemo2.API.Schema;
+using GraphQLDemo2.API.DataLoaders;
+using GraphQLDemo2.API.Schema.Mutations;
+using GraphQLDemo2.API.Schema.Queries;
+using GraphQLDemo2.API.Schema.Subscriptions;
 using GraphQLDemo2.API.Services.Courses;
+using GraphQLDemo2.API.Services.Instructors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +19,8 @@ builder.Services.AddPooledDbContextFactory<DataContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<CoursesRepository>();
+builder.Services.AddScoped<InstructorsRepository>();
+builder.Services.AddScoped<InstructorDataLoader>();
 
 var app = builder.Build();
 
