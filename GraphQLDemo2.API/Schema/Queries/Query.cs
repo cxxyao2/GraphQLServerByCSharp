@@ -1,5 +1,6 @@
 ﻿using GraphQLDemo2.API.Data;
 using GraphQLDemo2.API.Entities;
+using GraphQLDemo2.API.Schema.Filters;
 using GraphQLDemo2.API.Services.Courses;
 
 namespace GraphQLDemo2.API.Schema.Queries
@@ -52,6 +53,7 @@ namespace GraphQLDemo2.API.Schema.Queries
 
         [UseDbContext(typeof(DataContext))]
         [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        [UseFiltering(typeof(CourseFilterType))]
         public IQueryable<CourseQueryType> GetPaginatedCourses([ScopedService] DataContext context)
         {
             return context.Courses.Select(c => new CourseQueryType()

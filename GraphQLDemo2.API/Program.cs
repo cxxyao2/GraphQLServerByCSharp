@@ -13,6 +13,7 @@ builder.Services.AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddSubscriptionType<Subscription>()
+    .AddFiltering()
     .AddInMemorySubscriptions();
 
 builder.Services.AddPooledDbContextFactory<DataContext>(options =>
