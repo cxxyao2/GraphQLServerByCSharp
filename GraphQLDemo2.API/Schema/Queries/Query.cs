@@ -1,4 +1,5 @@
-﻿using GraphQLDemo2.API.Entities;
+﻿using GraphQLDemo2.API.Data;
+using GraphQLDemo2.API.Entities;
 using GraphQLDemo2.API.Services.Courses;
 
 namespace GraphQLDemo2.API.Schema.Queries
@@ -13,9 +14,10 @@ namespace GraphQLDemo2.API.Schema.Queries
             _coursesRepository = coursesRepository;
         }
 
+        [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
         public async Task<IEnumerable<CourseQueryType>> GetCourses()
         {
-            var courses =  await _coursesRepository.GetAllCourses();
+            var courses = await _coursesRepository.GetAllCourses();
 
             return courses.Select(c => new CourseQueryType()
             {
@@ -23,8 +25,43 @@ namespace GraphQLDemo2.API.Schema.Queries
                 Name = c.Name,
                 Subject = c.Subject,
                 InstructorId = c.InstructorId,
-                
-              
+
+
+            });
+
+        }
+
+
+        [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        public async Task<IEnumerable<CourseQueryType>> GetOffsetCourses()
+        {
+            var courses = await _coursesRepository.GetAllCourses();
+
+            return courses.Select(c => new CourseQueryType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId,
+
+
+            });
+
+        }
+
+
+        [UseDbContext(typeof(DataContext))]
+        [UseOffsetPaging(IncludeTotalCount = true, DefaultPageSize = 5)]
+        public IQueryable<CourseQueryType> GetPaginatedCourses([ScopedService] DataContext context)
+        {
+            return context.Courses.Select(c => new CourseQueryType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId,
+
+
             });
 
         }
