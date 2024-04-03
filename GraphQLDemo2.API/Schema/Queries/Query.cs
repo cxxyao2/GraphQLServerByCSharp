@@ -16,6 +16,22 @@ namespace GraphQLDemo2.API.Schema.Queries
             _coursesRepository = coursesRepository;
         }
 
+        public async Task<IEnumerable<CourseQueryType>> GetAllCourses()
+        {
+            var courses = await _coursesRepository.GetAllCourses();
+
+            return courses.Select(c => new CourseQueryType()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Subject = c.Subject,
+                InstructorId = c.InstructorId,
+
+
+            });
+
+        }
+
         [UsePaging(IncludeTotalCount = true, DefaultPageSize = 5)]
         public async Task<IEnumerable<CourseQueryType>> GetCourses()
         {

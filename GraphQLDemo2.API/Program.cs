@@ -18,6 +18,8 @@ builder.Services.AddGraphQLServer()
     .AddProjections()
     .AddInMemorySubscriptions();
 
+builder.Services.AddCors();
+
 builder.Services.AddPooledDbContextFactory<DataContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -41,6 +43,8 @@ using(IServiceScope scope=app.Services.CreateScope())
 app.UseRouting();
 
 app.UseWebSockets();
+
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
 
 app.UseEndpoints(endpoints =>
 {
