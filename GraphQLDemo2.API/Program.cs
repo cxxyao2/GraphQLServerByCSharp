@@ -13,6 +13,8 @@ builder.Services.AddGraphQLServer()
     .AddQueryType<Query>()
     .AddMutationType<Mutation>()
     .AddSubscriptionType<Subscription>()
+    .AddType<CourseQueryType>()
+    .AddType<InstructorQueryType>()
     .AddFiltering()
     .AddSorting()
     .AddProjections()
@@ -29,7 +31,7 @@ builder.Services.AddScoped<InstructorDataLoader>();
 
 var app = builder.Build();
 
-using(IServiceScope scope=app.Services.CreateScope())
+using(IServiceScope scope = app.Services.CreateScope())
 {
     IDbContextFactory<DataContext> contextFactory = 
         scope.ServiceProvider.GetRequiredService<IDbContextFactory<DataContext>>();

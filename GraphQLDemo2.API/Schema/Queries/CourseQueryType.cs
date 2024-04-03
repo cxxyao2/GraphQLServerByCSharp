@@ -4,7 +4,7 @@ using GraphQLDemo2.API.Entities;
 
 namespace GraphQLDemo2.API.Schema.Queries
 {
-    public class CourseQueryType
+    public class CourseQueryType: ISearchResultType
     {
         public int Id { get; set; }
         public string Name { get; set; }

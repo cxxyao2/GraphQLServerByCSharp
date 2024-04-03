@@ -3,6 +3,7 @@ using GraphQLDemo2.API.Entities;
 using GraphQLDemo2.API.Schema.Filters;
 using GraphQLDemo2.API.Schema.Sorters;
 using GraphQLDemo2.API.Services.Courses;
+using Microsoft.EntityFrameworkCore;
 
 namespace GraphQLDemo2.API.Schema.Queries
 {
@@ -85,28 +86,39 @@ namespace GraphQLDemo2.API.Schema.Queries
             });
 
         }
-        /* public IEnumerable<Course> GetCourses() 
+
+        [UseDbContext(typeof(DataContext))]
+        public async Task<IEnumerable<ISearchResultType>> Search(string term, [ScopedService] DataContext context)
         {
-            Random random = new Random();
-            return Enumerable.Range(1, 5)
-                .Select(e => new Course
+            IEnumerable<CourseQueryType> courses = await context.Courses
+                .Where(c => c.Name.Contains(term))
+                .Select(c => new CourseQueryType()
                 {
-                    Id = random.Next(),
-                    Name = $"Course {e}",
-                    Subject = (Subject)random.Next(0, Enum.GetValues(typeof(Subject)).Length),
-                    InstructorId = random.Next(),
-                    Instructor = new Instructor
-                    {
-                        Id = random.Next(),
-                        FirstName = $"Instructor {e}",
-                        LastName = "Doe",
-                        Salary = random.Next(50000, 100000)
-                    },
-                    Students = new List<Student>()
+                    Id = c.Id,
+                    Name = c.Name,
+                    Subject = c.Subject,
+                    InstructorId = c.InstructorId,
+
                 })
-                .ToArray();
+                .ToListAsync();
+
+            IEnumerable<InstructorQueryType> instructors = await context.Instructors
+               .Where(c => c.FirstName.Contains(term) || c.LastName.Contains(term))
+               .Select(c => new InstructorQueryType()
+               {
+                   Id = c.Id,
+                   FirstName = c.FirstName,
+                   LastName = c.LastName,
+                   Salary = c.Salary
+               })
+               .ToListAsync();
+
+            return new List<ISearchResultType>()
+                .Concat(courses)
+                .Concat(instructors);
+        
         }
-        */
+       
 
         public async Task<Course> GetCourseById(int id)
         {
