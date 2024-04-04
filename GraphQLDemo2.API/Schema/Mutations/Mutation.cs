@@ -1,4 +1,5 @@
-﻿using FluentValidation.Results;
+﻿using AppAny.HotChocolate.FluentValidation;
+using FluentValidation.Results;
 using GraphQLDemo2.API.DTOs;
 using GraphQLDemo2.API.Entities;
 using GraphQLDemo2.API.Schema.Subscriptions;
@@ -11,17 +12,17 @@ namespace GraphQLDemo2.API.Schema.Mutations
     public class Mutation
     {
         private readonly CoursesRepository _coursesRepository;
-        private readonly CourseTypeInputValidator _courseTypeInputValidator;
 
-        public Mutation(CoursesRepository coursesRepository, CourseTypeInputValidator courseTypeInputValidator)
+        public Mutation(CoursesRepository coursesRepository)
         {
             _coursesRepository = coursesRepository;
-            _courseTypeInputValidator = courseTypeInputValidator;
         }
 
-        public async Task<Course> CreateCourse(CourseTypeInput courseInput, [Service] ITopicEventSender topicEventSender)
+        public async Task<Course> CreateCourse(
+            [UseFluentValidation, UseValidator<CourseTypeInputValidator>] CourseTypeInput courseInput,
+            [Service] ITopicEventSender topicEventSender)
         {
-            Validate(courseInput);
+           
             CourseDTO courseDTO = new CourseDTO()
             {
                 Name = courseInput.Name,
@@ -37,19 +38,12 @@ namespace GraphQLDemo2.API.Schema.Mutations
 
         }
 
-        private void Validate(CourseTypeInput courseInput)
-        {
-            ValidationResult validationResult = _courseTypeInputValidator.Validate(courseInput);
-            if (!validationResult.IsValid)
-            {
-                throw new GraphQLException("Invalid input.");
-            }
-        }
+     
 
-        public async Task<Course> UpdateCourse(int id, CourseTypeInput courseInput, [Service] ITopicEventSender topicEventSender)
-        {
-            Validate(courseInput);
-
+        public async Task<Course> UpdateCourse(int id,
+            [UseFluentValidation, UseValidator<CourseTypeInputValidator>] CourseTypeInput courseInput,
+            [Service] ITopicEventSender topicEventSender)
+        {   
             CourseDTO courseDTO = new CourseDTO()
             {
                 Id = id,

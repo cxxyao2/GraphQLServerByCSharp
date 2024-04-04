@@ -1,3 +1,4 @@
+using AppAny.HotChocolate.FluentValidation;
 using FluentValidation.AspNetCore;
 using GraphQLDemo2.API.Data;
 using GraphQLDemo2.API.DataLoaders;
@@ -25,6 +26,10 @@ builder.Services.AddGraphQLServer()
     .AddFiltering()
     .AddSorting()
     .AddProjections()
+    .AddFluentValidation(o =>
+    {
+        o.UseDefaultErrorMapper();
+    })
     .AddInMemorySubscriptions();
 
 builder.Services.AddCors();
