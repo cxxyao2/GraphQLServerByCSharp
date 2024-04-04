@@ -1,7 +1,9 @@
-﻿using GraphQLDemo2.API.DTOs;
+﻿using FluentValidation.Results;
+using GraphQLDemo2.API.DTOs;
 using GraphQLDemo2.API.Entities;
 using GraphQLDemo2.API.Schema.Subscriptions;
 using GraphQLDemo2.API.Services.Courses;
+using GraphQLDemo2.API.Validators;
 using HotChocolate.Subscriptions;
 
 namespace GraphQLDemo2.API.Schema.Mutations
@@ -9,14 +11,17 @@ namespace GraphQLDemo2.API.Schema.Mutations
     public class Mutation
     {
         private readonly CoursesRepository _coursesRepository;
+        private readonly CourseTypeInputValidator _courseTypeInputValidator;
 
-        public Mutation(CoursesRepository coursesRepository)
+        public Mutation(CoursesRepository coursesRepository, CourseTypeInputValidator courseTypeInputValidator)
         {
             _coursesRepository = coursesRepository;
+            _courseTypeInputValidator = courseTypeInputValidator;
         }
 
         public async Task<Course> CreateCourse(CourseTypeInput courseInput, [Service] ITopicEventSender topicEventSender)
         {
+            Validate(courseInput);
             CourseDTO courseDTO = new CourseDTO()
             {
                 Name = courseInput.Name,
@@ -32,8 +37,19 @@ namespace GraphQLDemo2.API.Schema.Mutations
 
         }
 
+        private void Validate(CourseTypeInput courseInput)
+        {
+            ValidationResult validationResult = _courseTypeInputValidator.Validate(courseInput);
+            if (!validationResult.IsValid)
+            {
+                throw new GraphQLException("Invalid input.");
+            }
+        }
+
         public async Task<Course> UpdateCourse(int id, CourseTypeInput courseInput, [Service] ITopicEventSender topicEventSender)
         {
+            Validate(courseInput);
+
             CourseDTO courseDTO = new CourseDTO()
             {
                 Id = id,
